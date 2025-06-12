@@ -71,5 +71,28 @@ var autoEquipClassChange = function(unit) {
     }
   }
 
+  // Add usable non-weapon items as well
+  var miscList = root.getBaseData().getItemList();
+  var miscCount = miscList.getCount();
+
+  try { root.log("[AutoEquip] Scanning " + miscCount + " usable items..."); } catch (e) {}
+
+  for (var i = 0; i < miscCount; i++) {
+    if (slot >= DataConfig.getMaxUnitItemCount()) break;
+
+    var misc = miscList.getData(i);
+    if (!misc) continue;
+
+    var miscUsable = ItemControl.isItemUsable(unit, misc);
+    try {
+      root.log("  → " + misc.getName() + ": item usable? " + miscUsable);
+    } catch (e) {}
+
+    if (miscUsable) {
+      unit.setItem(slot++, misc);
+      try { root.log("   ↳ Added: " + misc.getName()); } catch (e) {}
+    }
+  }
+
   try { root.log("[AutoEquip] Done equipping " + unit.getName()); } catch (e) {}
 };
