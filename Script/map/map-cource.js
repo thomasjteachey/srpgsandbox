@@ -370,12 +370,13 @@ var CourceBuilder = {
 					movePoint = simulator.getSimulationMovePoint(index);
 					movePointMap = simulatorMap.getSimulationMovePoint(index);
 					// Check if the place where cannot move is now possible to move to.
-					if (movePoint === AIValue.MAX_MOVE && movePointMap !== AIValue.MAX_MOVE) {
-						if (PosChecker.getUnitFromPos(x2, y2) === null) {
-							blockUnitArray.push(targetUnit);
-							break;
-						}
-					}
+                                       if (movePoint === AIValue.MAX_MOVE && movePointMap !== AIValue.MAX_MOVE) {
+                                               var passUnit = PosChecker.getUnitFromPos(x2, y2);
+                                               if (passUnit === null || (passUnit.getUnitType() === unit.getUnitType() && passUnit.getOrderMark() === OrderMarkType.FREE)) {
+                                                       blockUnitArray.push(targetUnit);
+                                                       break;
+                                               }
+                                       }
 				}
 			}
 		}
@@ -421,11 +422,12 @@ var CourceBuilder = {
 			if (movePoint === 0) {
 				// Check if it can reach only one move.
 				if (type !== CourceType.VIRTUAL && firstPoint <= moveMaxCount) {
-					if (PosChecker.getUnitFromPos(xGoal, yGoal) !== null) {
-						// The unit exists at the goalIndex, so mark that cannot move there.
-						indexArrayDisabled.push(CurrentMap.getIndex(xGoal, yGoal));
-						return [];
-					}
+                                       var goalUnit = PosChecker.getUnitFromPos(xGoal, yGoal);
+                                       if (goalUnit !== null && !(goalUnit.getUnitType() === unit.getUnitType() && goalUnit.getOrderMark() === OrderMarkType.FREE)) {
+                                               // The unit exists at the goalIndex, so mark that cannot move there.
+                                               indexArrayDisabled.push(CurrentMap.getIndex(xGoal, yGoal));
+                                               return [];
+                                       }
 				}
 				
 				// Can reach at the unit current position, so exit the loop.
@@ -452,10 +454,11 @@ var CourceBuilder = {
 				if (movePoint > moveMaxCount && newPoint <= moveMaxCount) {
 					// If the unit exists at (x2, y2), overlap when move,
 					// so don't treat it as a course.
-					if (PosChecker.getUnitFromPos(x2, y2) !== null) {
-						indexArrayDisabled.push(CurrentMap.getIndex(x2, y2));
-						continue;
-					}
+                                       var blockUnit = PosChecker.getUnitFromPos(x2, y2);
+                                       if (blockUnit !== null && !(blockUnit.getUnitType() === unit.getUnitType() && blockUnit.getOrderMark() === OrderMarkType.FREE)) {
+                                               indexArrayDisabled.push(CurrentMap.getIndex(x2, y2));
+                                               continue;
+                                       }
 				}
 			}
 			
@@ -545,10 +548,11 @@ var CourceBuilder = {
 						return -1;
 					}
 					
-					if (PosChecker.getUnitFromPos(CurrentMap.getX(mapIndex), CurrentMap.getY(mapIndex)) === null) {
-						// The unit doesn't exist, so this position is goal.
-						return mapIndex;
-					}
+                                       var altUnit = PosChecker.getUnitFromPos(CurrentMap.getX(mapIndex), CurrentMap.getY(mapIndex));
+                                       if (altUnit === null || (altUnit.getUnitType() === unit.getUnitType() && altUnit.getOrderMark() === OrderMarkType.FREE)) {
+                                               // The unit doesn't exist, so this position is goal.
+                                               return mapIndex;
+                                       }
 				}
 			}
 		}
