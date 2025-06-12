@@ -390,29 +390,9 @@ var EnemyTurn = defineObject(BaseTurn,
 		return true;
 	},
 	
-       _getActorList: function() {
-               var list = TurnControl.getActorList();
-               var count = list.getCount();
-               var arr = [];
-               var i;
-
-               for (i = 0; i < count; i++) {
-                       arr.push(list.getData(i));
-               }
-
-               arr.sort(function(a, b) {
-                       if (a.getMapX() === b.getMapX()) {
-                               return a.getMapY() - b.getMapY();
-                       }
-
-                       return b.getMapX() - a.getMapX();
-               });
-
-               var newList = StructureBuilder.buildDataList();
-               newList.setDataArray(arr);
-
-               return newList;
-       },
+	_getActorList: function() {
+		return TurnControl.getActorList();
+	},
 	
 	_isSkipMode: function() {
 		return CurrentMap.isTurnSkipMode();
