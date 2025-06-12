@@ -240,10 +240,8 @@ var BaseCombinationCollector = defineObject(BaseObject,
 		else {
 			// There is a possibility that the player exists at the position (the player is processed to be passable).
 			// So check if the unit who is not myself exists.
-                       posUnit = PosChecker.getUnitFromPos(x, y);
-                       if (posUnit === null || posUnit === misc.unit ||
-                               (posUnit.getUnitType() === misc.unit.getUnitType() &&
-                                posUnit.getOrderMark() === OrderMarkType.FREE)) {
+			posUnit = PosChecker.getUnitFromPos(x, y);
+			if (posUnit === null || posUnit === misc.unit) {
 				// Create the cost because it can move to this position.
 				// The cost includes a target position to move and necessary steps to move.
 				this._createAndPushCost(misc);
