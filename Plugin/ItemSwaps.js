@@ -95,4 +95,29 @@ var autoEquipClassChange = function(unit) {
   }
 
   try { root.log("[AutoEquip] Done equipping " + unit.getName()); } catch (e) {}
+}; 
+
+var autoEquipParty = function() {
+  var list = PlayerList.getAliveList();
+  var count = list.getCount();
+  for (var i = 0; i < count; i++) {
+    autoEquipClassChange(list.getData(i));
+  }
 };
+
+(function() {
+  var _mapStartComplete = MapStartFlowEntry._completeMemberData;
+  MapStartFlowEntry._completeMemberData = function(scene) {
+    var result = _mapStartComplete.call(this, scene);
+    autoEquipParty();
+    return result;
+  };
+
+  var _mapEndAction = MapEndFlowEntry._doEndAction;
+  MapEndFlowEntry._doEndAction = function() {
+    autoEquipParty();
+    if (_mapEndAction) {
+      _mapEndAction.call(this);
+    }
+  };
+})();
