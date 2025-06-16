@@ -1,0 +1,65 @@
+/*
+ * StateTooltipInfo.js
+ * Adds parameter bonus descriptions for states in item tooltips.
+ * Place this file in your project's Plugin folder and enable it in the plugin manager.
+ */
+
+(function() {
+    var getStateBonusText = function(state) {
+        var arr = [];
+        var count = ParamGroup.getParameterCount();
+        for (var i = 0; i < count; i++) {
+            var val = ParamGroup.getDopingParameter(state, i);
+            if (val !== 0) {
+                var sign = val > 0 ? '+' : '';
+                arr.push(sign + val + ' ' + ParamGroup.getParameterName(i));
+            }
+        }
+        return arr.join(', ');
+    };
+
+    ItemInfoRenderer.drawState = function(x, y, stateGroup, isRecovery) {
+        var text;
+        var textui = this.getTextUI();
+        var color = textui.getColor();
+        var font = textui.getFont();
+        var spaceX = ItemInfoRenderer.getSpaceX();
+        var spaceY = this.getSpaceY();
+        var i, state, desc;
+        var refList;
+
+        if (this.getStateCount(stateGroup) === 0) {
+            return;
+        }
+
+        if (isRecovery) {
+            text = StringTable.State_Recovery;
+        }
+        else {
+            text = StringTable.State_Regist;
+        }
+
+        ItemInfoRenderer.drawKeyword(x, y, text);
+        x += spaceX;
+
+        if (stateGroup.isAllBadState()) {
+            TextRenderer.drawKeywordText(x, y, StringTable.State_AllBadState, -1, color, font);
+            return;
+        }
+
+        refList = stateGroup.getStateReferenceList();
+        for (i = 0; i < refList.getTypeCount(); i++) {
+            state = refList.getTypeData(i);
+            if (state.isHidden()) {
+                continue;
+            }
+            TextRenderer.drawKeywordText(x, y, state.getName(), -1, color, font);
+            y += spaceY;
+            desc = getStateBonusText(state);
+            if (desc !== '') {
+                TextRenderer.drawText(x + spaceX, y - spaceY, desc, -1, color, font);
+                y += spaceY;
+            }
+        }
+    };
+})();
