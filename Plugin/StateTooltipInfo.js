@@ -6,6 +6,14 @@
  */
 
 (function() {
+    // Keep track of which item is being rendered so we can
+    // fall back to its description if a state lacks one.
+    var _aliasSetInfoItem = ItemInfoWindow.setInfoItem;
+    ItemInfoRenderer._currentItem = null;
+    ItemInfoWindow.setInfoItem = function(item) {
+        ItemInfoRenderer._currentItem = item;
+        _aliasSetInfoItem.call(this, item);
+    };
     var getStateBonusText = function(state) {
         var arr = [];
         var count = ParamGroup.getParameterCount();
@@ -50,6 +58,11 @@
                     continue;
                 }
                 desc = getStateDescriptionText(state);
+                if (desc === '') {
+                    if (ItemInfoRenderer._currentItem && typeof ItemInfoRenderer._currentItem.getDescription === 'function') {
+                        desc = ItemInfoRenderer._currentItem.getDescription();
+                    }
+                }
                 if (desc === '') {
                     desc = getStateBonusText(state);
                 }
@@ -99,6 +112,11 @@
             TextRenderer.drawKeywordText(x, y, state.getName(), -1, color, font);
             y += spaceY;
             desc = getStateDescriptionText(state);
+            if (desc === '') {
+                if (ItemInfoRenderer._currentItem && typeof ItemInfoRenderer._currentItem.getDescription === 'function') {
+                    desc = ItemInfoRenderer._currentItem.getDescription();
+                }
+            }
             if (desc === '') {
                 desc = getStateBonusText(state);
             }
