@@ -16,12 +16,30 @@
                 desc = item.getDescription();
             }
 
-            if (!desc && item.custom) {
-                if (typeof item.custom.description === 'string') {
-                    desc = item.custom.description;
-                }
-                else if (typeof item.custom.desc === 'string') {
-                    desc = item.custom.desc;
+            if (!desc && typeof item.description === 'string') {
+                desc = item.description;
+            }
+
+            if (!desc && typeof item.desc === 'string') {
+                desc = item.desc;
+            }
+                if (!desc) {
+                    var lower;
+                    for (var key in item.custom) {
+                        if (!item.custom.hasOwnProperty(key)) {
+                            continue;
+                        }
+                        if (typeof item.custom[key] === 'string') {
+                            lower = key.toLowerCase();
+                            if (lower.indexOf('desc') !== -1 ||
+                                lower.indexOf('description') !== -1 ||
+                                lower.indexOf('info') !== -1 ||
+                                lower.indexOf('text') !== -1) {
+                                desc = item.custom[key];
+                                break;
+                            }
+                        }
+                    }
                 }
             }
         }
