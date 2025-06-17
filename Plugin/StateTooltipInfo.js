@@ -37,7 +37,30 @@
 
         return text || '';
     };
+    var _aliasItemInfoRendererGetStateCount = ItemInfoRenderer.getStateCount;
+    ItemInfoRenderer.getStateCount = function(stateGroup) {
+        var count = _aliasItemInfoRendererGetStateCount.call(this, stateGroup);
+        var refList, i, state, desc;
 
+        if (!stateGroup.isAllBadState()) {
+            refList = stateGroup.getStateReferenceList();
+            for (i = 0; i < refList.getTypeCount(); i++) {
+                state = refList.getTypeData(i);
+                if (state.isHidden()) {
+                    continue;
+                }
+                desc = getStateDescriptionText(state);
+                if (desc === '') {
+                    desc = getStateBonusText(state);
+                }
+                if (desc !== '') {
+                    count++;
+                }
+            }
+        }
+
+        return count;
+    };
     ItemInfoRenderer.drawState = function(x, y, stateGroup, isRecovery) {
         var text;
         var textui = this.getTextUI();
