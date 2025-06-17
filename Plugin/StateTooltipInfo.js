@@ -37,7 +37,6 @@
 
         return text || '';
     };
-
     var _aliasItemInfoRendererGetStateCount = ItemInfoRenderer.getStateCount;
     ItemInfoRenderer.getStateCount = function(stateGroup) {
         var count = _aliasItemInfoRendererGetStateCount.call(this, stateGroup);
@@ -62,7 +61,6 @@
 
         return count;
     };
-
     ItemInfoRenderer.drawState = function(x, y, stateGroup, isRecovery) {
         var text;
         var textui = this.getTextUI();
