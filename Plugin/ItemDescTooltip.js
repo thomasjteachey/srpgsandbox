@@ -23,15 +23,6 @@
             if (!desc && typeof item.desc === 'string') {
                 desc = item.desc;
             }
-
-            if (!desc && item.custom) {
-                if (typeof item.custom.description === 'string') {
-                    desc = item.custom.description;
-                }
-                else if (typeof item.custom.desc === 'string') {
-                    desc = item.custom.desc;
-                }
-
                 if (!desc) {
                     var lower;
                     for (var key in item.custom) {
