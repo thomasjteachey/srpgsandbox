@@ -1,6 +1,7 @@
 /*
  * StateTooltipInfo.js
- * Adds parameter bonus descriptions for states in item tooltips.
+ * Shows state descriptions in item tooltips.
+ * Falls back to parameter bonus text if the state has no description.
  * Place this file in your project's Plugin folder and enable it in the plugin manager.
  */
 
@@ -16,6 +17,13 @@
             }
         }
         return arr.join(', ');
+    };
+
+    var getStateDescriptionText = function(state) {
+        if (typeof state.getDescription === 'function') {
+            return state.getDescription();
+        }
+        return '';
     };
 
     ItemInfoRenderer.drawState = function(x, y, stateGroup, isRecovery) {
@@ -55,7 +63,10 @@
             }
             TextRenderer.drawKeywordText(x, y, state.getName(), -1, color, font);
             y += spaceY;
-            desc = getStateBonusText(state);
+            desc = getStateDescriptionText(state);
+            if (desc === '') {
+                desc = getStateBonusText(state);
+            }
             if (desc !== '') {
                 TextRenderer.drawText(x + spaceX, y - spaceY, desc, -1, color, font);
                 y += spaceY;
