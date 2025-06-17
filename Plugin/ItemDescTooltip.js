@@ -9,7 +9,24 @@
     var _aliasSetInfoItem = ItemInfoWindow.setInfoItem;
     ItemInfoRenderer._currentItemDesc = '';
     ItemInfoWindow.setInfoItem = function(item) {
-        ItemInfoRenderer._currentItemDesc = (item && typeof item.getDescription === 'function') ? item.getDescription() : '';
+        var desc = '';
+
+        if (item) {
+            if (typeof item.getDescription === 'function') {
+                desc = item.getDescription();
+            }
+
+            if (!desc && item.custom) {
+                if (typeof item.custom.description === 'string') {
+                    desc = item.custom.description;
+                }
+                else if (typeof item.custom.desc === 'string') {
+                    desc = item.custom.desc;
+                }
+            }
+        }
+
+        ItemInfoRenderer._currentItemDesc = desc;
         _aliasSetInfoItem.call(this, item);
     };
 
