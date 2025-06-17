@@ -1,32 +1,25 @@
 /*
- * StateTooltipInfo.js
- * Shows state descriptions in item tooltips.
- * Falls back to parameter bonus text if the state has no description.
+ * ItemDescTooltip.js
+ * Shows state descriptions in item tooltips and falls back
+ * to the item's own description if a state lacks one.
  * Place this file in your project's Plugin folder and enable it in the plugin manager.
  */
 
 (function() {
-    // Keep track of which item is being rendered so we can
-    // fall back to its description if a state lacks one.
+    // Keep track of which item is being rendered so we can always
+    // display its description along with any state descriptions.
     var _aliasSetInfoItem = ItemInfoWindow.setInfoItem;
     ItemInfoRenderer._currentItem = null;
+    ItemInfoRenderer._currentItemDesc = '';
+    ItemInfoRenderer._descShown = false;
+    ItemInfoRenderer._descAddedToCount = false;
     ItemInfoWindow.setInfoItem = function(item) {
         ItemInfoRenderer._currentItem = item;
+        ItemInfoRenderer._currentItemDesc = (item && typeof item.getDescription === 'function') ? item.getDescription() : '';
+        ItemInfoRenderer._descShown = false;
+        ItemInfoRenderer._descAddedToCount = false;
         _aliasSetInfoItem.call(this, item);
     };
-    var getStateBonusText = function(state) {
-        var arr = [];
-        var count = ParamGroup.getParameterCount();
-        for (var i = 0; i < count; i++) {
-            var val = ParamGroup.getDopingParameter(state, i);
-            if (val !== 0) {
-                var sign = val > 0 ? '+' : '';
-                arr.push(sign + val + ' ' + ParamGroup.getParameterName(i));
-            }
-        }
-        return arr.join(', ');
-    };
-
     var getStateDescriptionText = function(state) {
         var text = '';
 
@@ -63,13 +56,15 @@
                         desc = ItemInfoRenderer._currentItem.getDescription();
                     }
                 }
-                if (desc === '') {
-                    desc = getStateBonusText(state);
-                }
                 if (desc !== '') {
                     count++;
                 }
             }
+        }
+
+        if (!ItemInfoRenderer._descAddedToCount && ItemInfoRenderer._currentItemDesc) {
+            count++;
+            ItemInfoRenderer._descAddedToCount = true;
         }
 
         return count;
@@ -98,6 +93,12 @@
         ItemInfoRenderer.drawKeyword(x, y, text);
         x += spaceX;
 
+        if (!ItemInfoRenderer._descShown && ItemInfoRenderer._currentItemDesc) {
+            TextRenderer.drawText(x, y, ItemInfoRenderer._currentItemDesc, -1, color, font);
+            y += spaceY;
+            ItemInfoRenderer._descShown = true;
+        }
+
         if (stateGroup.isAllBadState()) {
             TextRenderer.drawKeywordText(x, y, StringTable.State_AllBadState, -1, color, font);
             return;
@@ -116,9 +117,6 @@
                 if (ItemInfoRenderer._currentItem && typeof ItemInfoRenderer._currentItem.getDescription === 'function') {
                     desc = ItemInfoRenderer._currentItem.getDescription();
                 }
-            }
-            if (desc === '') {
-                desc = getStateBonusText(state);
             }
             if (desc !== '') {
                 TextRenderer.drawText(x + spaceX, y - spaceY, desc, -1, color, font);
