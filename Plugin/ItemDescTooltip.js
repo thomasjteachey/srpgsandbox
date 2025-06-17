@@ -6,54 +6,73 @@
  * in the plugin manager.
  */
 
+//
+// ItemDescTooltip
+// Searches multiple fields for a description and ensures that the text
+// appears in both the info window and the help string shown at the
+// bottom of various menus.
+//
 (function() {
     var _aliasSetInfoItem = ItemInfoWindow.setInfoItem;
+    var _aliasGetHelpText = ItemInteraction.getHelpText;
     ItemInfoRenderer._currentItemDesc = '';
 
-    // Capture the item description whenever the info window updates.
-    ItemInfoWindow.setInfoItem = function(item) {
+    function _resolveDescription(item) {
         var desc = '';
 
-        if (item) {
-            if (typeof item.getDescription === 'function') {
-                desc = item.getDescription();
+        if (!item) {
+            return desc;
+        }
+
+        if (typeof item.getDescription === 'function') {
+            desc = item.getDescription();
+        }
+
+        if (!desc && typeof item.description === 'string') {
+            desc = item.description;
+        }
+
+        if (!desc && typeof item.desc === 'string') {
+            desc = item.desc;
+        }
+
+        if (!desc && item.custom) {
+            if (typeof item.custom.description === 'string') {
+                desc = item.custom.description;
+            }
+            else if (typeof item.custom.desc === 'string') {
+                desc = item.custom.desc;
             }
 
-            if (!desc && typeof item.description === 'string') {
-                desc = item.description;
-            }
+            if (!desc) {
+                var pattern = /(desc|description|info|text)/i;
+                var key;
+                for (key in item.custom) {
+                    if (!item.custom.hasOwnProperty(key)) {
+                        continue;
+                    }
 
-            if (!desc && typeof item.desc === 'string') {
-                desc = item.desc;
-            }
-
-            if (!desc && item.custom) {
-                if (typeof item.custom.description === 'string') {
-                    desc = item.custom.description;
-                }
-                else if (typeof item.custom.desc === 'string') {
-                    desc = item.custom.desc;
-                }
-
-                if (!desc) {
-                    var pattern = /(desc|description|info|text)/i;
-                    var key;
-                    for (key in item.custom) {
-                        if (!item.custom.hasOwnProperty(key)) {
-                            continue;
-                        }
-
-                        if (typeof item.custom[key] === 'string' && pattern.test(key)) {
-                            desc = item.custom[key];
-                            break;
-                        }
+                    if (typeof item.custom[key] === 'string' && pattern.test(key)) {
+                        desc = item.custom[key];
+                        break;
                     }
                 }
             }
         }
 
-        ItemInfoRenderer._currentItemDesc = desc;
+        return desc;
+    }
+
+    // Capture the item description whenever the info window updates.
+    ItemInfoWindow.setInfoItem = function(item) {
+        ItemInfoRenderer._currentItemDesc = _resolveDescription(item);
         _aliasSetInfoItem.call(this, item);
+    };
+
+    // Provide help text from the same logic used for the info window.
+    ItemInteraction.getHelpText = function() {
+        var item = this._scrollbar.getObject();
+        return _resolveDescription(item);
     };
 
     // Replace the default description renderer to use the cached text.
