@@ -14,8 +14,13 @@
 //
 (function() {
     var _aliasSetInfoItem = ItemInfoWindow.setInfoItem;
-    var _aliasGetHelpText = ItemInteraction.getHelpText;
     ItemInfoRenderer._currentItemDesc = '';
+
+    function _log(msg) {
+        try {
+            root.log('[ItemDescTooltip] ' + msg);
+        } catch (e) {}
+    }
 
     function _resolveDescription(item) {
         var desc = '';
@@ -60,6 +65,10 @@
             }
         }
 
+        if (item && item.getName) {
+            _log('Resolved description for ' + item.getName() + ': "' + desc + '"');
+        }
+
         return desc;
     }
 
@@ -67,12 +76,19 @@
     ItemInfoWindow.setInfoItem = function(item) {
         ItemInfoRenderer._currentItemDesc = _resolveDescription(item);
         _aliasSetInfoItem.call(this, item);
+        if (item && item.getName) {
+            _log('setInfoItem: ' + item.getName() + ' → ' + ItemInfoRenderer._currentItemDesc);
+        }
     };
 
     // Provide help text from the same logic used for the info window.
     ItemInteraction.getHelpText = function() {
         var item = this._scrollbar.getObject();
-        return _resolveDescription(item);
+        var desc = _resolveDescription(item);
+        if (item && item.getName) {
+            _log('getHelpText for ' + item.getName() + ': ' + desc);
+        }
+        return desc;
     };
 
     // Replace the default description renderer to use the cached text.
