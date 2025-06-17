@@ -109,27 +109,4 @@
         }
     };
 
-    var _aliasItemSentenceInfoDraw = ItemSentence.Info.drawItemSentence;
-    ItemSentence.Info.drawItemSentence = function(x, y, item) {
-        var text, textui, color, font;
-
-        text = typeof item.getDescription === 'function' ? item.getDescription() : '';
-        if (text) {
-            textui = ItemInfoRenderer.getTextUI();
-            color = textui.getColor();
-            font = textui.getFont();
-            TextRenderer.drawText(x, y, text, -1, color, font);
-            y += ItemInfoRenderer.getSpaceY();
-        }
-
-        _aliasItemSentenceInfoDraw.call(this, x, y, item);
-    };
-
-    var _aliasItemSentenceInfoCount = ItemSentence.Info.getItemSentenceCount;
-    ItemSentence.Info.getItemSentenceCount = function(item) {
-        var count = _aliasItemSentenceInfoCount.call(this, item);
-        var text = typeof item.getDescription === 'function' ? item.getDescription() : '';
-
-        return count + (text ? 1 : 0);
-    };
 })();
