@@ -62,7 +62,7 @@ var AutoConfig = {
 (function() {
     var aliasSetup = SetupControl.setup;
     SetupControl.setup = function() {
-        aliasSetup.call(this);
         AutoConfig.apply();
+        aliasSetup.call(this);
     };
 })();
