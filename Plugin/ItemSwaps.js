@@ -66,7 +66,8 @@ var autoEquipClassChange = function(unit) {
     } catch (e) {}
 
     if (usable) {
-      unit.setItem(slot++, item);
+      var newItem = root.duplicateItem(item);
+      unit.setItem(slot++, newItem);
       try { root.log("   ↳ Equipped: " + item.getName()); } catch (e) {}
     }
   }
@@ -89,7 +90,8 @@ var autoEquipClassChange = function(unit) {
     } catch (e) {}
 
     if (miscUsable) {
-      unit.setItem(slot++, misc);
+      var newMisc = root.duplicateItem(misc);
+      unit.setItem(slot++, newMisc);
       try { root.log("   ↳ Added: " + misc.getName()); } catch (e) {}
     }
   }
