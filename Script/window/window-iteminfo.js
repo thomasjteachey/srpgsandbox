@@ -85,30 +85,28 @@ var ItemInfoWindow = defineObject(BaseWindow,
 		return this._item;
 	},
 	
-        _configureWeapon: function(groupArray) {
-                groupArray.appendObject(ItemSentence.Description);
-                groupArray.appendObject(ItemSentence.AttackAndHit);
-                groupArray.appendObject(ItemSentence.CriticalAndRange);
-                groupArray.appendObject(ItemSentence.WeaponLevelAndWeight);
-                groupArray.appendObject(ItemSentence.AdditionState);
-                groupArray.appendObject(ItemSentence.WeaponOption);
-                groupArray.appendObject(ItemSentence.Effective);
-                groupArray.appendObject(ItemSentence.ReverseWeapon);
-                groupArray.appendObject(ItemSentence.Skill);
-                groupArray.appendObject(ItemSentence.Only);
-                groupArray.appendObject(ItemSentence.Bonus);
-        },
+	_configureWeapon: function(groupArray) {
+		groupArray.appendObject(ItemSentence.AttackAndHit);
+		groupArray.appendObject(ItemSentence.CriticalAndRange);
+		groupArray.appendObject(ItemSentence.WeaponLevelAndWeight);
+		groupArray.appendObject(ItemSentence.AdditionState);
+		groupArray.appendObject(ItemSentence.WeaponOption);
+		groupArray.appendObject(ItemSentence.Effective);
+		groupArray.appendObject(ItemSentence.ReverseWeapon);
+		groupArray.appendObject(ItemSentence.Skill);
+		groupArray.appendObject(ItemSentence.Only);
+		groupArray.appendObject(ItemSentence.Bonus);
+	},
 	
-        _configureItem: function(groupArray) {
-                groupArray.appendObject(ItemSentence.Description);
-                groupArray.appendObject(ItemSentence.WeaponLevelAndWeight);
-                groupArray.appendObject(ItemSentence.Info);
-                groupArray.appendObject(ItemSentence.ResistState);
-                groupArray.appendObject(ItemSentence.Skill);
-                groupArray.appendObject(ItemSentence.Target);
-                groupArray.appendObject(ItemSentence.Only);
-                groupArray.appendObject(ItemSentence.Bonus);
-        }
+	_configureItem: function(groupArray) {
+		groupArray.appendObject(ItemSentence.WeaponLevelAndWeight);
+		groupArray.appendObject(ItemSentence.Info);
+		groupArray.appendObject(ItemSentence.ResistState);
+		groupArray.appendObject(ItemSentence.Skill);
+		groupArray.appendObject(ItemSentence.Target);
+		groupArray.appendObject(ItemSentence.Only);
+		groupArray.appendObject(ItemSentence.Bonus);
+	}
 }
 );
 
@@ -138,28 +136,6 @@ var BaseItemSentence = defineObject(BaseObject,
 );
 
 var ItemSentence = {};
-
-ItemSentence.Description = defineObject(BaseItemSentence,
-{
-        drawItemSentence: function(x, y, item) {
-                var text = typeof item.getDescription === 'function' ? item.getDescription() : '';
-                var textui, color, font;
-
-                if (text) {
-                        textui = ItemInfoRenderer.getTextUI();
-                        color = textui.getColor();
-                        font = textui.getFont();
-                        TextRenderer.drawText(x, y, text, -1, color, font);
-                }
-        },
-
-        getItemSentenceCount: function(item) {
-                var text = typeof item.getDescription === 'function' ? item.getDescription() : '';
-
-                return text ? 1 : 0;
-        }
-}
-);
 
 ItemSentence.AttackAndHit = defineObject(BaseItemSentence,
 {

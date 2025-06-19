@@ -1,21 +1,19 @@
+
 /*
  * SupportItemExp.js
- * Grants 25 experience when a wand (support item) is used on another unit.
+ * Grants 25 experience whenever a wand (support item) is used.
  * Place this file in your project's Plugin folder and enable it in the plugin manager.
  */
 
 (function() {
-    var alias = BaseItemUse._getItemExperience;
-    BaseItemUse._getItemExperience = function(itemUseParent) {
-        var itemTargetInfo = itemUseParent.getItemTargetInfo();
-        var user = itemTargetInfo.unit;
-        var target = itemTargetInfo.targetUnit;
-        var item = itemTargetInfo.item;
+    var alias = ItemExpFlowEntry._getItemExperience;
 
-        if (item && item.isWand && item.isWand() && target !== null && user !== target) {
-            return ExperienceCalculator.getBestExperience(user, 25);
-        }
-
-        return alias.call(this, itemUseParent);
+    ItemExpFlowEntry._getItemExperience = function(itemUseParent) {
+		return 25;
     };
+	
+    BaseItemUse._getItemExperience = function(itemUseParent) {
+		return 25;
+    };
+	
 })();

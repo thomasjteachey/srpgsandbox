@@ -10,10 +10,10 @@ var AutoConfig = {
     // Each property below maps to one option so you can quickly see which values
     // can be changed. 0 represents the first choice shown in the config screen.
     settings: {
-        musicPlay: 0,          // 0..4   Music volume
-        soundEffect: 0,        // 0..4   Sound effect volume
+        musicPlay: 3,          // 0..4   Music volume
+        soundEffect: 3,        // 0..4   Sound effect volume
         realBattle: 0,         // 0:Off, 1:On
-        autoTurnEnd: 1,        // 0:On, 1:Off
+        autoTurnEnd: 0,        // 0:On, 1:Off
         autoTurnSkip: 2,       // 0:Direct, 1:Quick, 2:None
         mapGrid: 1,            // 0:Show, 1:Hide
         unitSpeed: 1,          // 0:Fast, 1:Normal, 2:Slow
@@ -22,14 +22,14 @@ var AutoConfig = {
         loadCommand: 0,        // 0:Show, 1:Hide
         autoCursor: 0,         // 0:On, 1:Off
         mouseOperation: 0,     // 0:On, 1:Off
-        mouseCursorTracking: 0,// 0:On, 1:Off
+        mouseCursorTracking: 1,// 0:On, 1:Off
         voice: 0,              // 0..4   Voice volume
-        realBattleScaling: 0,  // 0:Normal, 1:Zoom
+        realBattleScaling: 1,  // 0:Normal, 1:Zoom
         scrollSpeed: 1,        // 0:Fast, 1:Normal, 2:Slow
         enemyMarking: 0,       // 0:Show, 1:Hide
-        mapUnitHpVisible: 0,   // 0:Number, 1:Gauge, 2:None
+        mapUnitHpVisible: 1,   // 0:Number, 1:Gauge, 2:None
         mapUnitSymbol: 0,      // 0:Show, 1:Hide
-        damagePopup: 0,        // 0:On, 1:Off
+        damagePopup: 1,        // 0:On, 1:Off
         skipControl: 0         // 0:All input, 1:Mouse, 2:None
     },
 

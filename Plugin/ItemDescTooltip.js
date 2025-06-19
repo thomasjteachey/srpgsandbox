@@ -9,42 +9,7 @@
     var _aliasSetInfoItem = ItemInfoWindow.setInfoItem;
     ItemInfoRenderer._currentItemDesc = '';
     ItemInfoWindow.setInfoItem = function(item) {
-        var desc = '';
-
-        if (item) {
-            if (typeof item.getDescription === 'function') {
-                desc = item.getDescription();
-            }
-
-            if (!desc && typeof item.description === 'string') {
-                desc = item.description;
-            }
-
-            if (!desc && typeof item.desc === 'string') {
-                desc = item.desc;
-            }
-                if (!desc) {
-                    var lower;
-                    for (var key in item.custom) {
-                        if (!item.custom.hasOwnProperty(key)) {
-                            continue;
-                        }
-                        if (typeof item.custom[key] === 'string') {
-                            lower = key.toLowerCase();
-                            if (lower.indexOf('desc') !== -1 ||
-                                lower.indexOf('description') !== -1 ||
-                                lower.indexOf('info') !== -1 ||
-                                lower.indexOf('text') !== -1) {
-                                desc = item.custom[key];
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        ItemInfoRenderer._currentItemDesc = desc;
+        ItemInfoRenderer._currentItemDesc = (item && typeof item.getDescription === 'function') ? item.getDescription() : '';
         _aliasSetInfoItem.call(this, item);
     };
 
