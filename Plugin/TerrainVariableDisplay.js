@@ -141,12 +141,20 @@ var TerrainVariableDisplayHelper = {
             return null;
         }
 
-        session = root.getCurrentSession ? root.getCurrentSession() : null;
+        if (typeof root.getCurrentSession !== 'function') {
+            return null;
+        }
+
+        session = root.getCurrentSession();
         if (session === null) {
             return null;
         }
 
-        mapInfo = session.getCurrentMapInfo ? session.getCurrentMapInfo() : null;
+        if (typeof session.getCurrentMapInfo !== 'function') {
+            return null;
+        }
+
+        mapInfo = session.getCurrentMapInfo();
         if (mapInfo === null) {
             return null;
         }
