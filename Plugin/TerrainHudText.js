@@ -65,20 +65,5 @@
 
         x += 2;
         TextRenderer.drawText(x, y, customText, length, color, font);
-
-        y += this.getIntervalY();
-        this._drawKeyword(x, y, root.queryCommand('avoid_capacity'), terrain.getAvoid());
-
-        if (terrain.getDef() !== 0) {
-            text = ParamGroup.getParameterName(ParamGroup.getParameterIndexFromType(ParamType.DEF));
-            y += this.getIntervalY();
-            this._drawKeyword(x, y, text, terrain.getDef());
-        }
-
-        if (terrain.getMdf() !== 0) {
-            text = ParamGroup.getParameterName(ParamGroup.getParameterIndexFromType(ParamType.MDF));
-            y += this.getIntervalY();
-            this._drawKeyword(x, y, text, terrain.getMdf());
-        }
     };
 })();
