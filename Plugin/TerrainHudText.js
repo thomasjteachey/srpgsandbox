@@ -66,4 +66,27 @@
         x += 2;
         TextRenderer.drawText(x, y, customText, length, color, font);
     };
+
+    var _aliasGetWindowHeight = MapParts.Terrain._getWindowHeight;
+    MapParts.Terrain._getWindowHeight = function() {
+        var xCursor;
+        var yCursor;
+        var terrain;
+        var customText;
+
+        xCursor = this.getMapPartsX();
+        yCursor = this.getMapPartsY();
+        terrain = PosChecker.getTerrainFromPos(xCursor, yCursor);
+
+        if (terrain === null) {
+            return 0;
+        }
+
+        customText = TerrainHudText._getCustomText();
+        if (customText === null) {
+            return _aliasGetWindowHeight.call(this);
+        }
+
+        return 12 + this.getIntervalY();
+    };
 })();
