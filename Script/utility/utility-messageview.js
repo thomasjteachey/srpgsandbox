@@ -916,6 +916,7 @@ var BacklogScrollbar = defineObject(BaseScrollbar,
 		var srcHeight = destHeight;
 		var handle = this._getFaceResourceHandle(object.command);
 		var facialExpressionId = object.command.getFacialExpressionId();
+		var messageLayout = root.getDefaultMessageLayout(object.command.getCommandType());
 		
 		if (handle === null || root.isLargeFaceUse()) {
 			return;
@@ -926,7 +927,8 @@ var BacklogScrollbar = defineObject(BaseScrollbar,
 			return;
 		}
 		
-		if (facialExpressionId === 0) {
+		// Even in the backlog, refer to the "Enable Expression (Face)" in the message layout.
+		if (facialExpressionId === 0 || (messageLayout !== null && !messageLayout.isFacialExpressionEnabled())) {
 			xSrc = handle.getSrcX();
 			ySrc = handle.getSrcY();
 		}

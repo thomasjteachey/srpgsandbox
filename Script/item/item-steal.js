@@ -33,6 +33,9 @@ var StealItemUse = defineObject(BaseItemUse,
 			this._itemUseParent.setItemSkipMode(false);
 		}
 		
+		// Prevents item durability from decreasing when closing the "Steal" screen without trading.
+		itemUseParent.disableItemDecrement();
+		
 		screenParam = this._createScreenParam();
 		
 		this._unitItemStealScreen = createObject(UnitItemStealScreen);
@@ -43,6 +46,10 @@ var StealItemUse = defineObject(BaseItemUse,
 	
 	moveMainUseCycle: function() {
 		if (SceneManager.isScreenClosed(this._unitItemStealScreen)) {
+			if (this._unitItemStealScreen.getScreenResult() === UnitItemTradeResult.TRADEEND) {
+				// A trade was completed on the "Steal" screen. Therefore, reduce the durability of the "Steal" item.
+				this._itemUseParent._isItemDecrementDisabled = false;
+			}
 			return MoveResult.END;
 		}
 		
@@ -113,6 +120,8 @@ var StealItemUse = defineObject(BaseItemUse,
 		screenParam.unit = this._itemUseParent.getItemTargetInfo().unit;
 		screenParam.targetUnit = this._itemUseParent.getItemTargetInfo().targetUnit;
 		screenParam.stealFlag = this._itemUseParent.getItemTargetInfo().item.getStealInfo().getStealFlag();
+		// Lock "Steal" items on the "Steal" screen to prevent trading.
+		screenParam.lockedItem = this._itemUseParent.getItemTargetInfo().item;
 		
 		return screenParam;
 	}

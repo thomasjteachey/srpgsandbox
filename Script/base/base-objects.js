@@ -197,7 +197,7 @@ var BaseWindow = defineObject(BaseObject,
 	
 	drawWindowTitle: function(x, y, width, height) {
 		var color, font, pic, titleWidth, dx;
-		var titleCount = 3;
+		var titlePartsCount = this._getWindowTitlePartsCount();
 		var textui = this.getWindowTitleTextUI();
 		var text = this.getWindowTitleText();
 		
@@ -208,9 +208,9 @@ var BaseWindow = defineObject(BaseObject,
 		color = textui.getColor();
 		font = textui.getFont();
 		pic = textui.getUIImage();
-		titleWidth = TitleRenderer.getTitlePartsWidth() * (titleCount + 2);
+		titleWidth = TitleRenderer.getTitlePartsWidth() * (titlePartsCount + 2);
 		dx = Math.floor((width - titleWidth) / 2);
-		TextRenderer.drawFixedTitleText(x + dx, y - 40, text, color, font, TextFormat.CENTER, pic, titleCount);
+		TextRenderer.drawFixedTitleText(x + dx, y - 40, text, color, font, TextFormat.CENTER, pic, titlePartsCount);
 	},
 	
 	getWindowTextUI: function() {
@@ -260,6 +260,10 @@ var BaseWindow = defineObject(BaseObject,
 		if (pic !== null) {
 			WindowRenderer.drawStretchWindow(x, y, width, height, pic);
 		}
+	},
+	
+	_getWindowTitlePartsCount: function() {
+		return 3;
 	}
 }
 );

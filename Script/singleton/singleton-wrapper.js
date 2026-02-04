@@ -639,6 +639,10 @@ var DefineControl = {
 	
 	getUnitMenuWindowWidth: function() {
 		return 450;
+	},
+	
+	getCurrencyWindowHeight: function() {
+		return 50;
 	}
 };
 

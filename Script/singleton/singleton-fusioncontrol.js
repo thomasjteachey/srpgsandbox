@@ -207,6 +207,11 @@ var FusionControl = {
 		var fusionData = FusionControl.getFusionData(unit);
 		var isChildCheck = false;
 		
+		// In UnitStatusScrollbar._createStatusEntry, ParamGroup.getLastValue is called.
+		// The index specified for _createStatusEntry ranges from 0 to the total number of parameters(including custom parameters).
+		// Parameters can be reordered in _configureUnitParameters.
+		// Since reordering is possible, index 1 doesn't necessarily identify "Str",
+		// so ParamGroup.getParameterType converts it to the appropriate index.
 		index = ParamGroup.getParameterType(index);
 		
 		if (fusionData !== null) {

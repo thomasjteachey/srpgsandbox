@@ -60,7 +60,8 @@ var ScreenBuilder = {
 		return {
 			unit: null,
 			targetUnit: null,
-			stealFlag: 0
+			stealFlag: 0,
+			lockedItem: null
 		};
 	},
 	

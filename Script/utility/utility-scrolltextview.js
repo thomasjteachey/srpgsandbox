@@ -427,6 +427,11 @@ var PictureScrollBlock = defineObject(BaseScrollBlock,
 		for (i = 0; i < count; i++) {
 			data = list.getCollectionData(i, 0);
 			if (data.getName() === value) {
+				// Calling getCollectionData for each piece of data, as shown in this code, is not advisable.
+				// Since getCollectionData loads resources internally, having many Pictures would trigger simultaneous loading, risking memory shortages.
+				// This break statement exits the loop once the target name is found, but the stronger intention is to avoid repeatedly calling getCollectionData.
+				// In other words, Pictures used for message scrolling should ideally be positioned earlier in the resource sequence.
+				// The current version of the DataList object does not implement a method to search for data by name.
 				this._pictureId = data.getId();
 				break;
 			}

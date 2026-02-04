@@ -374,7 +374,7 @@ var DictionaryScreen = defineObject(BaseScreen,
 		var x = this.getContentX();
 		var y = this.getContentY();
 		
-		TitleRenderer.drawTitle(pic, x, y, TitleRenderer.getTitlePartsWidth(), TitleRenderer.getTitlePartsHeight(), 8);
+		TitleRenderer.drawTitle(pic, x, y, TitleRenderer.getTitlePartsWidth(), TitleRenderer.getTitlePartsHeight(), this._geNameTitlePartsCount());
 		TextRenderer.drawText(x + 40, y + 17, text, -1, color, font);
 	},
 	
@@ -392,6 +392,10 @@ var DictionaryScreen = defineObject(BaseScreen,
 	
 	_playCancelSound: function() {
 		MediaControl.soundDirect('commandcancel');
+	},
+	
+	_geNameTitlePartsCount: function() {
+		return 8;
 	}
 }
 );

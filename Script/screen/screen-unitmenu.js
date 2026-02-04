@@ -673,7 +673,7 @@ var IconItemScrollbar = defineObject(BaseScrollbar,
 	},
 	
 	getObjectWidth: function() {
-		return 30;
+		return GraphicsFormat.ICON_WIDTH + 6;
 	},
 	
 	getObjectHeight: function() {

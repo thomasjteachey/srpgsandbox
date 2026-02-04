@@ -155,13 +155,12 @@ var MapVictoryFlowEntry = defineObject(BaseFlowEntry,
 		var pic2 = root.queryTextUI('simple_frame').getUIImage();
 		
 		if (pic !== null) {
-			x = LayoutControl.getCenterX(-1, UIFormat.SCREENFRAME_WIDTH);
-			y = LayoutControl.getCenterY(-1, UIFormat.SCREENFRAME_HEIGHT);
+			x = LayoutControl.getCenterX(-1, pic.getWidth());
+			y = LayoutControl.getCenterY(-1, pic.getHeight());
 			
 			if (pic2 !== null) {
 				pic2.draw(x, y);
 			}
-			
 			pic.draw(x, y);
 		}
 	},
@@ -471,6 +470,7 @@ var AfterTransitionFlowEntry = defineObject(BaseFlowEntry,
 	},
 	
 	_doEndAction: function() {
+		MapLayer.getMarkingPanel().resetMarkingPanel();
 		root.resetVisualEventObject();
 	}
 }

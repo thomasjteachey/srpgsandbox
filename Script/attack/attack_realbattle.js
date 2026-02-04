@@ -859,7 +859,7 @@ var BaseBattler = defineObject(BaseObject,
 		var weapon = BattlerChecker.getRealBattleWeapon(this._unit);
 		
 		// Display weapons if the equipped weapons are not magic.
-		if (weapon !== null && weapon.getWeaponCategoryType() !== AttackTemplateType.MAGE) {
+		if (weapon !== null && weapon.getWeaponCategoryType() !== WeaponCategoryType.MAGIC) {
 			this._motion.setWeapon(weapon);
 		}
 	},

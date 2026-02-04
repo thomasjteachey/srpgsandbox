@@ -179,12 +179,19 @@ var Probability = {
 	},
 	
 	getInvocationPercent: function(unit, type, value) {
-		var n, hp, percent;
+		var n, hp, percent, maxMhp;
 		
 		if (type === InvocationType.HPDOWN) {
-			n = value / 100;
-			hp = ParamBonus.getMhp(unit) * n;
-			percent = unit.getHp() <= hp ? 100 : 0;
+			maxMhp = ParamBonus.getMhp(unit);
+			// If "HP Drop Rate" is 0, the skill will be activated if HP is full.
+			if (value === 0 && unit.getHp() === maxMhp) {
+				percent = 100;
+			}
+			else {
+				n = value / 100;
+				hp = maxMhp * n;
+				percent = unit.getHp() <= hp ? 100 : 0;
+			}
 		}
 		else if (type === InvocationType.ABSOLUTE) {
 			percent = value;
@@ -1506,6 +1513,11 @@ var UnitProvider = {
 			oldHp = unit.getHp();
 			this.recoveryUnit(unit);
 			this._resetPos(unit);
+			// In the recoveryUnit, AliveType.INJURY changes to AliveType.ALIVE, with the intention of enumerating units in getAliveList.
+			// By deliberately keeping them in a alive state, units appear in lists such as the "Unit Marshal" screen.
+			// However, since it is necessary to have an indication that the unit is injured, the HP is set based on what has been backed up in advance.
+			// The HP when injured is 0, so the unit's HP becomes 0.(ChronicInjuryHp.ZERO)
+			// This mechanism creates the concept of incapacitated unit(unable to sortie with 0 HP).
 			unit.setHp(oldHp);
 		}
 	},

@@ -203,9 +203,7 @@ var BaseUnitParameter = defineObject(BaseObject,
 	},
 	
 	getUnitTotalParamBonus: function(unit, weapon) {
-		var i, count, skill;
 		var d = 0;
-		var arr = [];
 		
 		// Weapon parameter bonus
 		if (weapon !== null) {
@@ -216,12 +214,7 @@ var BaseUnitParameter = defineObject(BaseObject,
 		d += this._getItemBonus(unit, true);
 		
 		// Check the skill of parameter bonus.
-		arr = SkillControl.getSkillObjectArray(unit, weapon, SkillType.PARAMBONUS, '', this._getParamBonusObjectFlag());
-		count = arr.length;
-		for (i = 0; i < count; i++) {
-			skill = arr[i].skill;
-			d += this.getParameterBonus(skill);
-		}
+		d += this._getSkillBonus(unit, weapon);
 		
 		return d;
 	},
@@ -266,6 +259,26 @@ var BaseUnitParameter = defineObject(BaseObject,
 		}
 		
 		return d;
+	},
+	
+	_getSkillBonus: function(unit, weapon) {
+		var i, skill;
+		var d = 0;
+		var arr = SkillControl.getSkillObjectArray(unit, weapon, SkillType.PARAMBONUS, '', this._getParamBonusObjectFlag());
+		var count = arr.length;
+		
+		for (i = 0; i < count; i++) {
+			skill = arr[i].skill;
+			if (this._isSkillAllowed(unit, skill)) {
+				d += this.getParameterBonus(skill);
+			}
+		}
+		
+		return d;
+	},
+	
+	_isSkillAllowed: function(unit, skill) {
+		return true;
 	},
 	
 	_getParamBonusObjectFlag: function() {

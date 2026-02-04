@@ -554,7 +554,7 @@ var StockCountWindow = defineObject(BaseWindow,
 	},
 	
 	getWindowHeight: function() {
-		return 50;
+		return DefineControl.getCurrencyWindowHeight();
 	}
 }
 );

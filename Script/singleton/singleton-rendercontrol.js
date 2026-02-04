@@ -1319,7 +1319,7 @@ var WindowRenderer = {
 		var i;
 		var skinWidth = UIFormat.MENUWINDOW_WIDTH / 2;
 		var skinHeight = UIFormat.MENUWINDOW_HEIGHT;
-		var d = 2;
+		var d = this._getFrameMargin();
 		var frameWidth = 16;
 		var frameHeight = 16;
 		var xSrc = skinWidth;
@@ -1332,6 +1332,13 @@ var WindowRenderer = {
 			return;
 		}
 		
+		// Draw the src(0, 0, 64, 64) scaled to dest(x + d, y + d).
+		// This drawing corresponds to the window's content(excluding the frame).
+		// Since drawing the frame over the content isn't problematic, we'll draw from the content first.
+		// The fact that we're using x + d means that even when x is 0, the content will be drawn slightly offset.
+		// Window frame corners may sometimes have diagonal shapes.
+		// In such cases, if we don't offset the content by +d, the content might be drawn protruding beyond the corner.
+		// The margin(d) is only used for content drawing (this drawStretchParts) and not for frame drawing.
 		pic.drawStretchParts(x + d, y + d, width - (d * 2), height - (d * 2), 0, 0, skinWidth, skinHeight);
 	
 		// Draw 4 corners of the frame.
@@ -1383,6 +1390,10 @@ var WindowRenderer = {
 		
 		// Draw the right frame except for the corner.
 		drawFrameLeftAndRight(x + (width - frameWidth), y, xSrc + (skinWidth - frameWidth), 0);
+	},
+	
+	_getFrameMargin: function() {
+		return 2;
 	}
 };
 

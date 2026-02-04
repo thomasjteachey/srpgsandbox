@@ -773,7 +773,7 @@ var ShopCurrencyWindow = defineObject(BaseWindow,
 	},
 	
 	getWindowHeight: function() {
-		return 52;
+		return DefineControl.getCurrencyWindowHeight();
 	},
 	
 	startPriceCount: function(price) {

@@ -164,6 +164,8 @@ var TurnControl = {
 			
 			SceneManager.getActiveScene().turnEnd();
 		}
+		
+		this._doEndAction();
 	},
 	
 	getActorList: function() {
@@ -198,6 +200,11 @@ var TurnControl = {
 		}
 		
 		return list;
+	},
+	
+	_doEndAction: function() {
+		MapLayer.getUnitRangePanel().setUnit(null);
+		MapLayer.getUnitRangePanel().setRepeatUnit(null);
 	}
 };
 

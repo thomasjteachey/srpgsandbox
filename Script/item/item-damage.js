@@ -24,12 +24,8 @@ var DamageItemUse = defineObject(BaseItemUse,
 		
 		generator.damageHitEx(itemTargetInfo.targetUnit, this._getItemDamageAnime(itemTargetInfo),
 			damageInfo.getDamageValue() + plus, damageInfo.getDamageType(), damageInfo.getHit(), itemTargetInfo.unit, itemUseParent.isItemSkipMode());
-		
-		// When using a damaged item with a durability of 1 to obtain "Item Drops",
-		// it is unnatural for the damaged item to appear in the item window.
-		// By reducing the durability of the damaged item in advance, the item window can be left blank.
-		itemUseParent.decreaseItem();
-		itemUseParent.disableItemDecrement();
+			
+		this._preUseDurability(itemUseParent);
 		
 		return this._dynamicEvent.executeDynamicEvent();
 	},
@@ -42,6 +38,14 @@ var DamageItemUse = defineObject(BaseItemUse,
 		var anime = validateNull(itemTargetInfo.item.getItemAnime());
 		
 		return anime;
+	},
+	
+	_preUseDurability: function(itemUseParent) {
+		// When using a damaged item with a durability of 1 to obtain "Item Drops",
+		// it is unnatural for the damaged item to appear in the item window.
+		// By reducing the durability of the damaged item in advance, the item window can be left blank.
+		itemUseParent.decreaseItem();
+		itemUseParent.disableItemDecrement();
 	}
 }
 );

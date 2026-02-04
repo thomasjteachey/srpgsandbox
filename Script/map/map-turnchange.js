@@ -959,7 +959,7 @@ var ReinforcementChecker = defineObject(BaseObject,
 			pageData = posData.getReinforcementPage(i);
 			turnCount = this._getTurnCount(pageData);
 			// Check if a condition such as "Start Turn" is satisfied.
-			if (pageData.getStartTurn() <= turnCount && pageData.getEndTurn() >= turnCount && turnType === pageData.getTurnType()) {
+			if (this._isTurnAllowed(pageData, turnCount, turnType)) {
 				// Check if the event condition is satisfied.
 				if (pageData.isCondition()) {
 					// Appear.
@@ -968,6 +968,10 @@ var ReinforcementChecker = defineObject(BaseObject,
 				}
 			}
 		}
+	},
+	
+	_isTurnAllowed: function(pageData, turnCount, turnType) {
+		return pageData.getStartTurn() <= turnCount && pageData.getEndTurn() >= turnCount && turnType === pageData.getTurnType();
 	},
 	
 	_createReinforcementUnit: function(posData, pageData, arr) {
@@ -1141,7 +1145,7 @@ var ReinforcementChecker = defineObject(BaseObject,
 			for (j = 0; j < pageCount; j++) {
 				pageData = posData.getReinforcementPage(j);
 				turnCount = this._getTurnCount(pageData);
-				if (pageData.getStartTurn() <= turnCount && pageData.getEndTurn() >= turnCount && turnType === pageData.getTurnType()) {
+				if (this._isTurnAllowed(pageData, turnCount, turnType)) {
 					if (pageData.isCondition()) {
 						pos = this._getTargetPos(posData, pageData);
 						if (pos !== null) {

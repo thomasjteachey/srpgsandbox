@@ -401,6 +401,7 @@ var UnitItemStealScreen = defineObject(UnitItemTradeScreen,
 {
 	_stealFlag: 0,
 	_dropTrophyArray: null,
+	_screenParam: null,
 	
 	moveScreenCycle: function() {
 		var result = UnitItemTradeScreen.moveScreenCycle.call(this);
@@ -421,6 +422,7 @@ var UnitItemStealScreen = defineObject(UnitItemTradeScreen,
 	_prepareScreenMemberData: function(screenParam) {
 		UnitItemTradeScreen._prepareScreenMemberData.call(this, screenParam);
 		this._stealFlag = screenParam.stealFlag;
+		this._screenParam = screenParam;
 	},
 	
 	_completeScreenMemberData: function(screenParam) {
@@ -512,6 +514,11 @@ var UnitItemStealScreen = defineObject(UnitItemTradeScreen,
 	_isTradeDisabled: function(unit, item) {
 		if (item === null) {
 			return false;
+		}
+		
+		if (item === this._screenParam.lockedItem) {
+			// "Steal" items cannot be traded.
+			return true;
 		}
 		
 		if (unit.getUnitType() === UnitType.PLAYER && item.isImportance()) {

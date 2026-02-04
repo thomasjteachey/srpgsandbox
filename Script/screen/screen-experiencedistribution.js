@@ -500,7 +500,7 @@ var BonusPointWindow = defineObject(BaseWindow,
 	},
 	
 	getWindowHeight: function() {
-		return 50;
+		return DefineControl.getCurrencyWindowHeight();
 	},
 	
 	_getCurrencySign: function() {

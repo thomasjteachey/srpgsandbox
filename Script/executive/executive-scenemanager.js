@@ -125,6 +125,10 @@ var SceneManager = {
 	},
 	
 	getLastScreen: function() {
+		if (this._screenArray.length === 0) {
+			return null;
+		}
+		
 		return this._screenArray[this._screenArray.length - 1].screen;
 	},
 	

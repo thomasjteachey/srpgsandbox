@@ -107,7 +107,7 @@ var BaseUnitSentence = defineObject(BaseObject,
 		var colorIndex = 1;
 		var length = -1;
 		
-		TextRenderer.drawKeywordText(x, y, text, length, color, font);
+		this._drawSentenceName(x, y, text, length, color, font);
 		
 		x += this._getNumberSpace();
 		
@@ -129,6 +129,10 @@ var BaseUnitSentence = defineObject(BaseObject,
 	
 	getUnitSentenceTextUI: function() {
 		return root.queryTextUI('default_window');
+	},
+	
+	_drawSentenceName: function(x, y, text, length, color, font) {
+		TextRenderer.drawKeywordText(x, y, text, length, color, font);
 	},
 	
 	_getNumberSpace: function() {
@@ -254,7 +258,8 @@ UnitSentence.Range = defineObject(BaseUnitSentence,
 		var colorIndex = 1;
 		var alpha = 255;
 		
-		TextRenderer.drawKeywordText(x, y, root.queryCommand('range_capacity'), length, color, font);
+		this._drawSentenceName(x, y, root.queryCommand('range_capacity'), length, color, font);
+		
 		x += this._getNumberSpace();
 		
 		if (weapon === null) {

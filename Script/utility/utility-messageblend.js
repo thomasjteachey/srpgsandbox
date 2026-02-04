@@ -85,10 +85,9 @@ var MessagePager = defineObject(BaseObject,
 		var i;
 		var textLineArray = this._containerArray[this._containerIndex];
 		var count = textLineArray.length;
-		var titleCount = 10;
 		
 		for (i = 0; i < count; i++) {
-			TitleRenderer.drawTitle(this._picUnderLine, x, y - 20, TitleRenderer.getTitlePartsWidth(), TitleRenderer.getTitlePartsHeight(), titleCount);
+			TitleRenderer.drawTitle(this._picUnderLine, x, y - 20, TitleRenderer.getTitlePartsWidth(), TitleRenderer.getTitlePartsHeight(), this._getTitlePartsCount());
 			y += this._charHeight + this._getSpaceInterval();
 		}
 	},
@@ -117,6 +116,10 @@ var MessagePager = defineObject(BaseObject,
 	},
 	
 	_getSpaceInterval: function() {
+		return 10;
+	},
+	
+	_getTitlePartsCount: function() {
 		return 10;
 	},
 	

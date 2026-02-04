@@ -2954,6 +2954,42 @@ UnitCommand.FusionRelease = defineObject(BaseFusionCommand,
 	
 	_getBoundaryY: function(session) {
 		return session.getMapBoundaryValue();
+	},
+	
+	isCommandDisplayable: function() {
+		if (!BaseFusionCommand.isCommandDisplayable.call(this)) {
+			return false;
+		}
+		
+		return this._isCommandDisplayableInternal();
+	},
+	
+	_isCommandDisplayableInternal: function() {
+		var point;
+		var unit = this.getCommandTarget();
+		
+		if (FusionControl.getFusionData(unit).getMetamorphozeData() === null) {
+			return true;
+		}
+		
+		// Temporarily disable "Transformation".
+		// This will make the unit's current class be judged as its original class, not the class modified by "Transformation".
+		// Using this method allows you to temporarily clear "Transformation" and avoid the hassle of resetting it.
+		unit.getUnitStyle().enableMetamorphozeData(false);
+
+		// Assume that "Transformation" is specified under "Skills and Transformation" in "Fusion Settings".
+		// In this case, the unit switches to a specific class during fusion,
+		// but the current accessible position may not necessarily be accessible by the pre-transformation class.
+		// For example, suppose "Transformation" changes the unit to "Flying", but its original class is "Normal".
+		// In this scenario, if fusion is canceled in a position only accessible by "Flying",
+		// the unit may become unable to move when reverting to its original class.
+		// Therefore, verify whether the current position is accessible by the original class.
+		point = PosChecker.getMovePointFromUnit(unit.getMapX(), unit.getMapY(), unit);
+
+		// Since the accessibility information has been obtained, re-enable "Transformation".
+		unit.getUnitStyle().enableMetamorphozeData(true);
+		
+		return point !== 0;
 	}
 }
 );

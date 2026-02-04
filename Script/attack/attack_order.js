@@ -510,6 +510,7 @@ var VirtualAttackControl = {
 		weapon = virtualAttackUnit.weapon;
 		flag = state.getBadStateFlag();
 		if (flag & BadStateFlag.PHYSICS) {
+			// Not only WeaponCategoryType.PHYSICS, but also WeaponCategoryType.SHOOT is "Physical Attack".
 			if (weapon !== null && weapon.getWeaponCategoryType() !== WeaponCategoryType.MAGIC) {
 				return true;
 			}

@@ -35,7 +35,7 @@ var BaseCombinationCollector = defineObject(BaseObject,
 					continue;
 				}
 				
-				if (aggregation !== null && !aggregation.isCondition(targetUnit)) {
+				if (!this._isTargetAllowed(aggregation, targetUnit)) {
 					continue;
 				}
 				
@@ -314,6 +314,14 @@ var BaseCombinationCollector = defineObject(BaseObject,
 		misc.combinationArray.push(combination);
 		
 		return combination;
+	},
+	
+	_isTargetAllowed: function(aggregation, targetUnit) {
+		if (aggregation !== null && !aggregation.isCondition(targetUnit)) {
+			return false;
+		}
+		
+		return !targetUnit.isInvisible();
 	},
 	
 	_checkTargetScore: function(unit, targetUnit) {

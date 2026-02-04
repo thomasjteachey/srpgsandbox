@@ -385,7 +385,6 @@ var RealBattleTable = defineObject(BaseBattleTable,
 		straightFlow.pushFlowEntry(RealWeaponCutinFlowEntry);
 		straightFlow.pushFlowEntry(RealSkillCutinFlowEntry);
 		straightFlow.pushFlowEntry(RealUnitCutinFlowEntry);
-		
 	},
 	
 	_pushFlowEntriesActionEnd: function(straightFlow) {
@@ -922,6 +921,17 @@ var RealUnitCutinFlowEntry = defineObject(BaseCutinFlowEntry,
 		var type = order.getActiveMotionActionType();
 		var unit = order.getActiveUnit();
 		var attackTemplateType = BattlerChecker.findAttackTemplateTypeFromUnit(unit);
+		
+		if (order.isCurrentCritical() && order.isCurrentFinish()) {
+			if (type === MotionFighter.CRITICALATTACK1 || type === MotionFighter.CRITICALATTACK2) {
+				// If "Crt Direct Finisher" is not set in the "Battle Motions" for a class or weapon, either "Crt Direct Attack 1" or "Crt Direct Attack 2" will be referenced.
+				// Similarly, "Cut-in" will also reference either "Crt Direct Attack 1" or "Crt Direct Attack 2".
+				// However, there may be cases where "Crt Direct Finisher" is not set in "Battle Motions", but effects for "Crt Direct Finisher" are configured in "Cut-in".
+				// In other words, this refers to scenarios where the motion for "Crt Direct Finisher" is not prepared, but the effects are.
+				// In such cases, since we want "Cut-in" to reference "Crt Direct Finisher", we specify MotionFighter.CRITICALFINISHATTACK.
+				type = MotionFighter.CRITICALFINISHATTACK;
+			}
+		}
 		
 		return unit.getCutinAnime(attackTemplateType, type);
 	}

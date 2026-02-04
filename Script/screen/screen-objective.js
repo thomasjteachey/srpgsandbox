@@ -105,16 +105,22 @@ var ObjectiveWindow = defineObject(BaseWindow,
 	},
 	
 	_drawObjectiveArea: function(x, y) {
-		var dx = 10;
-		var dy = 25;
+		var i;
+		var text = [StringTable.Objective_Victory, StringTable.Objective_Defeat];
+		var scrollbar = [this._scrollbarVictory, this._scrollbarDefeat];
+		var count = scrollbar.length;
+		var dx = this._scrollbarVictory.getObjectWidth();
+		var dy = this._scrollbarVictory.getObjectHeight();
 		
-		y += 150;
+		x = LayoutControl.getCenterX(-1, count * dx);
+		y += this._getObjectiveAreaStartY();
 		
-		this._drawTitle(x, y, StringTable.Objective_Victory);
-		this._scrollbarVictory.drawScrollbar(x + dx, y + dy);
-		
-		this._drawTitle(x + 265, y, StringTable.Objective_Defeat);
-		this._scrollbarDefeat.drawScrollbar(x + dx + 265, y + dy);
+		for (i = 0; i < count; i++) {
+			this._drawTitle(x, y, text[i]);
+			scrollbar[i].drawScrollbar(x, y + dy);
+			
+			x += dx;
+		}
 	},
 	
 	_drawTop: function(x, y) {
@@ -135,10 +141,10 @@ var ObjectiveWindow = defineObject(BaseWindow,
 	
 	_drawArea: function(x, y) {
 		var i;
-		var dx = 140;
+		var dx = this._getObjectivePartsInterval();
 		var count = this._objectArray.length;
 		
-		y += 260;
+		y += this._getObjectivePartsStartY();
 		
 		x = LayoutControl.getCenterX(-1, count * dx);
 		
@@ -146,7 +152,6 @@ var ObjectiveWindow = defineObject(BaseWindow,
 			this._objectArray[i].drawObjectiveParts(x, y);
 			x += dx;
 		}
-		
 	},
 	
 	_drawTitle: function(x, y, text) {
@@ -162,6 +167,18 @@ var ObjectiveWindow = defineObject(BaseWindow,
 	
 	_getTitleTextUI: function() {
 		return root.queryTextUI('objective_title');
+	},
+	
+	_getObjectiveAreaStartY: function() {
+		return 150;
+	},
+	
+	_getObjectivePartsStartY: function() {
+		return 260;
+	},
+	
+	_getObjectivePartsInterval: function() {
+		return 140;
 	},
 	
 	_getTitlePartsCount: function() {
@@ -220,7 +237,7 @@ var ObjectiveFaceZone = defineObject(BaseObject,
 				this._drawInfo(x, y, unit, unitType);
 			}
 			
-			x += 180;
+			x += this._getFaceInterval();
 		}
 	},
 	
@@ -253,12 +270,28 @@ var ObjectiveFaceZone = defineObject(BaseObject,
 		var font = textui.getFont();
 		var pic = textui.getUIImage();
 		var text = [StringTable.UnitType_Player, StringTable.UnitType_Enemy, StringTable.UnitType_Ally];
+		var pos = this._getTotalValuePos();
 		
-		y += 112;
+		y += this._getInfoY();
 		
-		TitleRenderer.drawTitle(pic, x - 20 + 5, y - 10, TitleRenderer.getTitlePartsWidth(), TitleRenderer.getTitlePartsHeight(), 3);
-		TextRenderer.drawText(x + 5, y + 12, text[unitType], -1, color, font);
-		NumberRenderer.drawNumber(x + 100 + 5, y + 7, this._getTotalValue(unitType));
+		TextRenderer.drawFixedTitleText(x, y, text[unitType], color, font, TextFormat.LEFT, pic, this._getTitlePartsCount());
+		NumberRenderer.drawNumber(x + pos.x, y + pos.y, this._getTotalValue(unitType));
+	},
+	
+	_getFaceInterval: function() {
+		return 180;
+	},
+	
+	_getInfoY: function() {
+		return 102;
+	},
+	
+	_getTotalValuePos: function() {
+		return {x: 105, y: 17};
+	},
+	
+	_getTitlePartsCount: function() {
+		return 3;
 	},
 	
 	_getTotalValue: function(unitType) {

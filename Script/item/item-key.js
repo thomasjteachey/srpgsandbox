@@ -90,13 +90,7 @@ var KeyItemUse = defineObject(BaseItemUse,
 			return EnterResult.NOTENTER;
 		}
 		
-		// Normally BaseItemUse processes to reduce items, however, KeyItemUse has already processed at this time.
-		// The reason why is to prevent the used-up key from being displayed at BaseItemFull.
-		// BaseItemFull is displayed when the item is obtained with the use of the key and items are full.
-		itemUseParent.decreaseItem();
-		
-		// Disable because it's already been reduced.
-		itemUseParent.disableItemDecrement();
+		this._preUseDurability(itemUseParent);
 		
 		this._eventTrophy = createObject(EventTrophy);
 		
@@ -129,6 +123,16 @@ var KeyItemUse = defineObject(BaseItemUse,
 		var keyInfo = itemTargetInfo.item.getKeyInfo();
 		
 		return PosChecker.getKeyEvent(targetPos.x, targetPos.y, keyInfo.getKeyFlag());
+	},
+	
+	_preUseDurability: function(itemUseParent) {
+		// Normally BaseItemUse processes to reduce items, however, KeyItemUse has already processed at this time.
+		// The reason why is to prevent the used-up key from being displayed at BaseItemFull.
+		// BaseItemFull is displayed when the item is obtained with the use of the key and items are full.
+		itemUseParent.decreaseItem();
+		
+		// Disable because it's already been reduced.
+		itemUseParent.disableItemDecrement();
 	}
 }
 );

@@ -370,6 +370,7 @@ var ItemUseParent = defineObject(BaseObject,
 	_isItemDecrementDisabled: false,
 	_isItemSkipMode: false,
 	_straightFlow: null,
+	_saveItemExp: -1,
 	
 	enterUseCycle: function(itemTargetInfo) {
 		this._prepareMemberData(itemTargetInfo);
@@ -413,6 +414,10 @@ var ItemUseParent = defineObject(BaseObject,
 	
 	decreaseItem: function() {
 		if (!this._isItemDecrementDisabled) {
+			// When an item's durability decreases, it may become a "Broken Item".
+			// To prevent referencing the "Exp Gain" of broken items, save the current item's "Exp Gain" separately.
+			this._saveItemExp = this._itemTargetInfo.item.getExp();
+			
 			// Reduce the item durability.
 			ItemControl.decreaseItem(this._itemTargetInfo.unit, this._itemTargetInfo.item);
 		}
@@ -431,6 +436,7 @@ var ItemUseParent = defineObject(BaseObject,
 		this._isItemDecrementDisabled = false;
 		this._isItemSkipMode = false;
 		this._straightFlow = createObject(StraightFlow);
+		this._saveItemExp = -1;
 	},
 	
 	_completeMemberData: function(itemTargetInfo) {
@@ -726,6 +732,10 @@ var ItemExpFlowEntry = defineObject(BaseFlowEntry,
 		var itemTargetInfo = itemUseParent.getItemTargetInfo();
 		var unit = itemTargetInfo.unit;
 		var exp = itemTargetInfo.item.getExp();
+		
+		if (itemUseParent._saveItemExp !== -1) {
+			return itemUseParent._saveItemExp;
+		}
 		
 		return ExperienceCalculator.getBestExperience(unit, exp);
 	}

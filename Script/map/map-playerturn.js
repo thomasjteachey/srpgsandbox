@@ -805,6 +805,7 @@ var MapSequenceCommand = defineObject(BaseObject,
 	_pushFlowEntries: function(straightFlow) {
 		// If need to do something after action ends, add an object.
 		straightFlow.pushFlowEntry(RepeatMoveFlowEntry);
+		straightFlow.pushFlowEntry(OneMoreFlowEntry);
 		straightFlow.pushFlowEntry(UnitWaitFlowEntry);
 		straightFlow.pushFlowEntry(ReactionFlowEntry);
 	}
@@ -854,6 +855,9 @@ var RepeatMoveFlowEntry = defineObject(BaseFlowEntry,
 	_prepareMemberData: function(playerTurn) {
 		this._playerTurn = playerTurn;
 		this._mapSequenceArea = createObject(MapSequenceArea);
+		
+		// Save before executing "Use Leftover Mov". The property is used in the OneMoreFlowEntry object.
+		playerTurn.tempNormalMov = playerTurn.getTurnTargetUnit().getMostResentMov();
 	},
 	
 	_completeMemberData: function(playerTurn) {
@@ -869,6 +873,14 @@ var RepeatMoveFlowEntry = defineObject(BaseFlowEntry,
 	_isTargetMovable: function(playerTurn) {
 		var unit = playerTurn.getTurnTargetUnit();
 		
+		if (!this._isTargetMovableInternal(unit)) {
+			return false;
+		}
+		
+		return unit.getMostResentMov() !== ParamBonus.getMov(unit);
+	},
+	
+	_isTargetMovableInternal: function(unit) {
 		if (StateControl.isBadStateOption(unit, BadStateOption.NOACTION)) {
 			return false;
 		}
@@ -881,7 +893,108 @@ var RepeatMoveFlowEntry = defineObject(BaseFlowEntry,
 			return false;
 		}
 		
-		return unit.getMostResentMov() !== ParamBonus.getMov(unit);
+		return true;
+	}
+}
+);
+
+var OneMoreFlowEntry = defineObject(BaseFlowEntry,
+{
+	_unitCommandManager: null,
+	
+	enterFlowEntry: function(playerTurn) {
+		this._prepareMemberData(playerTurn);
+		return this._completeMemberData(playerTurn);
+	},
+	
+	moveFlowEntry: function() {
+		var nextmode;
+		var prevmode = this._unitCommandManager.getCycleMode();
+		var result = this._unitCommandManager.moveListCommandManager();
+		
+		nextmode = this._unitCommandManager.getCycleMode();
+		
+		// Prevents the command from closing when the cancel key is accidentally pressed.
+		if (prevmode === ListCommandManagerMode.OPEN && nextmode === ListCommandManagerMode.TITLE) {
+			return result;
+		}
+		
+		return MoveResult.CONTINUE;
+	},
+	
+	drawFlowEntry: function() {
+		this._unitCommandManager.drawListCommandManager();
+	},
+	
+	_prepareMemberData: function(playerTurn) {
+		this._unitCommandManager = createObject(UnitCommand);
+	},
+	
+	_completeMemberData: function(playerTurn) {
+		var unit = playerTurn.getTurnTargetUnit();
+		var normalMov = playerTurn.tempNormalMov;
+		
+		delete playerTurn.tempNormalMov;
+		
+		if (typeof normalMov !== 'number') {
+			return EnterResult.NOTENTER;
+		}
+		
+		// normalMov refers to "Mov Consumed" through normal movement.
+		// unit.getMostRecentMov() refers to "Mov Consumed" through "Use Leftover Mov".
+		// Adding these together reveals the total movement distance.
+		unit.setMostResentMov(normalMov + unit.getMostResentMov());
+		
+		if (!this._isTargetMovable(playerTurn)) {
+			return EnterResult.NOTENTER;
+		}
+		
+		this._unitCommandManager.setListCommandUnit(unit);
+		this._unitCommandManager.openListCommandManager();
+		
+		return EnterResult.OK;
+	},
+	
+	_isTargetMovable: function(playerTurn) {
+		var unit = playerTurn.getTurnTargetUnit();
+		
+		if (!this._isCommandAllowed(unit)) {
+			return false;
+		}
+		
+		if (!this._isTargetMovableInternal(unit)) {
+			return false;
+		}
+		
+		return unit.getMostResentMov() <= ParamBonus.getMov(unit);
+	},
+	
+	_isCommandAllowed: function(unit) {
+		var skill = SkillControl.getPossessionSkill(unit, SkillType.REPEATMOVE);
+		
+		// If "Show Commands After Move" is enabled, getSkillValue returns 1.
+		if (skill === null || skill.getSkillValue() !== 1) {
+			// The 'Can "Move Agiain"' option in "Class Options" does not allow commands to be displayed.
+			return false;
+		}
+		
+		return true;
+	},
+	
+	_isTargetMovableInternal: function(unit) {
+		if (StateControl.isBadStateOption(unit, BadStateOption.NOACTION)) {
+			return false;
+		}
+		
+		if (StateControl.isBadStateOption(unit, BadStateOption.BERSERK)) {
+			return false;
+		}
+		
+		if (StateControl.isBadStateOption(unit, BadStateOption.AUTO)) {
+			return false;
+		}
+		
+		return true;
 	}
 }
 );

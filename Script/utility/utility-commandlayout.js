@@ -339,6 +339,9 @@ var ConfigScreenLauncher = defineObject(BaseScreenLauncher,
 				MapLayer.getMarkingPanel().resetMarkingPanel();
 			}
 		}
+		else if (root.getBaseScene() === SceneType.BATTLESETUP) {
+			SceneManager.getActiveScene()._setupEdit._mapEdit.rebuildMapPartsCollection();
+		}
 	}
 }
 );
