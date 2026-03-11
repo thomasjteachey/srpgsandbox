@@ -188,6 +188,12 @@ var UnitMenuScreen = defineObject(BaseScreen,
 	},
 	
 	_moveHelpMode: function() {
+		if (InputControl.isCancelAction()) {
+			this._bottomWindowArray[this._activePageIndex].cancelHelpMode();
+			this._playMenuCancelSound();
+			return MoveResult.END;
+		}
+
 		if (!this._bottomWindowArray[this._activePageIndex].isHelpMode()) {
 			this.changeCycleMode(UnitMenuMode.TOP);
 		}
@@ -486,6 +492,11 @@ var UnitMenuBottomWindow = defineObject(BaseMenuBottomWindow,
 	changeUnitMenuTarget: function(unit) {
 		this._unit = unit;
 		this._unitMenuHelp = 0;
+
+		// Clear old help focus and tooltip state before loading data
+		// for the newly inspected unit.
+		this._itemInteraction.cancelInteraction();
+		this._skillInteraction.cancelInteraction();
 		
 		this._itemInteraction.setData(unit);
 		this._itemInteraction.setWindowTextUI(this.getWindowTextUI());
@@ -574,6 +585,11 @@ var UnitMenuBottomWindow = defineObject(BaseMenuBottomWindow,
 	lockTracing: function(isLocked) {
 		this._isTracingLocked = isLocked;
 	},
+
+	cancelHelpMode: function() {
+		this._itemInteraction.cancelInteraction();
+		this._skillInteraction.cancelInteraction();
+	},
 	
 	_setSkillData: function(unit) {
 		var i;
@@ -660,6 +676,14 @@ var UnitMenuBottomWindow = defineObject(BaseMenuBottomWindow,
 
 var IconItemScrollbar = defineObject(BaseScrollbar,
 {
+	drawCursor: function(x, y, isActive) {
+		var pic = this.getCursorPicture();
+
+		// Keep the pointer aligned with the top-left of icon entries
+		// instead of drifting toward the center.
+		this._commandCursor.drawCursor(x, y - 1, isActive, pic);
+	},
+
 	drawScrollContent: function(x, y, object, isSelect, index) {
 		var handle = object.skill.getIconResourceHandle();
 		
